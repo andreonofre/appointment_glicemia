@@ -85,10 +85,11 @@ function Login() {
    */
   const handleGoogleLogin = async () => {
     try {
+      console.log('🔐 Iniciando login com Google...');
       setError('');
       setLoading(true);
 
-      await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/painel`,
@@ -96,11 +97,17 @@ function Login() {
         }
       });
 
+      if (error) {
+        console.error('❌ Erro do Supabase ao iniciar OAuth:', error);
+        throw error;
+      }
+
+      console.log('✅ OAuth iniciado, redirecionando para Google...', data);
       // O Supabase vai redirecionar para o Google automaticamente
       // Não precisa fazer nada aqui, o redirect é automático
     } catch (err) {
+      console.error('❌ Erro ao fazer login com Google:', err);
       setError('Erro ao fazer login com Google.');
-      console.error(err);
       setLoading(false);
     }
   };

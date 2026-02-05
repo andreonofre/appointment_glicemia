@@ -22,10 +22,13 @@ const { supabase } = require('../config/supabase');
  */
 async function register(req, res) {
   try {
+    console.log('📝 Iniciando registro de usuário...');
     const { email, password, nome, idade, tipoDiabetes } = req.body;
+    console.log(`📧 Email: ${email}`);
 
     // Validações básicas
     if (!email || !password || !nome) {
+      console.log('❌ Dados incompletos no registro');
       return res.status(400).json({ 
         error: 'Email, senha e nome são obrigatórios.' 
       });
@@ -34,6 +37,7 @@ async function register(req, res) {
     // Gera código de 6 dígitos
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
+    console.log(`🔢 Código gerado: ${verificationCode}`);
 
     // Salva código temporário no banco
     const { error: codeError } = await supabase
@@ -49,20 +53,22 @@ async function register(req, res) {
       ], { onConflict: 'email' });
 
     if (codeError) {
-      console.error('Erro ao salvar código:', codeError);
+      console.error('❌ Erro ao salvar código:', codeError);
       return res.status(400).json({ error: 'Erro ao gerar código de verificação.' });
     }
 
     // Envia email com código
+    console.log('📧 Enviando email...');
     const emailService = require('../services/emailService');
     await emailService.sendVerificationCode(email, nome, verificationCode);
+    console.log('✅ Email enviado com sucesso!');
 
     return res.status(200).json({
       message: 'Código de verificação enviado para seu email!',
       email
     });
   } catch (error) {
-    console.error('Erro no cadastro:', error);
+    console.error('❌ Erro no cadastro:', error);
     return res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
   }
 }
@@ -72,9 +78,12 @@ async function register(req, res) {
  */
 async function verifyCode(req, res) {
   try {
+    console.log('🔍 Verificando código...');
     const { email, code } = req.body;
+    console.log(`📧 Email: ${email}, Código: ${code}`);
 
     if (!email || !code) {
+      console.log('❌ Email ou código ausente');
       return res.status(400).json({ error: 'Email e código são obrigatórios.' });
     }
 
@@ -88,11 +97,13 @@ async function verifyCode(req, res) {
       .single();
 
     if (verifyError || !verificationData) {
+      console.log('❌ Código inválido ou não encontrado');
       return res.status(400).json({ error: 'Código inválido ou expirado.' });
     }
 
     // Verifica se expirou
     if (new Date() > new Date(verificationData.expires_at)) {
+      console.log('❌ Código expirado');
       return res.status(400).json({ error: 'Código expirado. Solicite um novo.' });
     }
 

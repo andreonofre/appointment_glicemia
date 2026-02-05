@@ -45,6 +45,12 @@ app.use(cors({
 // Morgan - Logs de requisições (útil para debug)
 app.use(morgan('dev'));
 
+// Log personalizado para todas as requisições
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.path} - ${new Date().toLocaleTimeString()}`);
+  next();
+});
+
 // Express JSON - Permite receber JSON no body
 app.use(express.json());
 
@@ -84,7 +90,8 @@ app.use((req, res) => {
 
 // Erro geral do servidor
 app.use((error, req, res, next) => {
-  console.error('Erro no servidor:', error);
+  console.error('❌ Erro no servidor:', error);
+  console.error('Stack:', error.stack);
   res.status(500).json({ 
     error: 'Erro interno do servidor.',
     message: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -103,7 +110,14 @@ app.listen(PORT, () => {
   console.log(`🩺  Porta: ${PORT}`);
   console.log(`🩺  URL: http://localhost:${PORT}`);
   console.log(`🩺  Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🩺  CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
   console.log('🩺 =======================================');
+  console.log('');
+  console.log('📊 Variáveis de ambiente carregadas:');
+  console.log(`✅ SUPABASE_URL: ${process.env.SUPABASE_URL ? 'Definida' : '❌ Não definida'}`);
+  console.log(`✅ SUPABASE_ANON_KEY: ${process.env.SUPABASE_ANON_KEY ? 'Definida' : '❌ Não definida'}`);
+  console.log(`✅ RESEND_API_KEY: ${process.env.RESEND_API_KEY ? 'Definida' : '❌ Não definida'}`);
+  console.log(`✅ JWT_SECRET: ${process.env.JWT_SECRET ? 'Definida' : '❌ Não definida'}`);
   console.log('');
 });
 
