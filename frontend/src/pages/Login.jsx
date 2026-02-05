@@ -89,10 +89,18 @@ function Login() {
       setError('');
       setLoading(true);
 
+      // Usa a URL de produção ou local baseado no ambiente
+      const isLocal = window.location.hostname === 'localhost';
+      const baseUrl = isLocal 
+        ? 'http://localhost:5173' 
+        : 'https://appointment-glicemia.vercel.app';
+
+      console.log('🌐 Base URL:', baseUrl);
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${baseUrl}/auth/callback`,
           skipBrowserRedirect: false
         }
       });
