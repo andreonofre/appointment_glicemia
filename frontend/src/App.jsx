@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyCode from './pages/VerifyCode';
+import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
 import './styles/global.css';
 
@@ -78,6 +79,9 @@ function App() {
               </PublicRoute>
             } 
           />
+          
+          {/* Rota de callback do OAuth */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
 
           {/* Rotas privadas */}
           <Route 

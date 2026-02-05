@@ -18,7 +18,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../services/supabaseClient';
+import { supabase } from '../config/supabase';
 import './Login.css';
 
 function Login() {
@@ -92,7 +92,7 @@ function Login() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/painel`,
+          redirectTo: `${window.location.origin}/auth/callback`,
           skipBrowserRedirect: false
         }
       });
