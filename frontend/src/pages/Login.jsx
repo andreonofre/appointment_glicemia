@@ -88,21 +88,19 @@ function Login() {
       setError('');
       setLoading(true);
 
-      const { data, error: authError } = await supabase.auth.signInWithOAuth({
+      await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/painel`
+          redirectTo: `${window.location.origin}/painel`,
+          skipBrowserRedirect: false
         }
       });
 
-      if (authError) {
-        setError('Erro ao fazer login com Google.');
-        console.error(authError);
-      }
+      // O Supabase vai redirecionar para o Google automaticamente
+      // Não precisa fazer nada aqui, o redirect é automático
     } catch (err) {
       setError('Erro ao fazer login com Google.');
       console.error(err);
-    } finally {
       setLoading(false);
     }
   };
