@@ -18,6 +18,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import * as authService from '../services/authService';
+import { supabase } from '../config/supabase';
 
 // Cria o contexto
 const AuthContext = createContext();
@@ -31,14 +32,57 @@ export function AuthProvider({ children }) {
 
   // Ao carregar, verifica se há usuário logado
   useEffect(() => {
+    // Verifica localStorage
     const token = localStorage.getItem('token');
     const storedUser = authService.getStoredUser();
     
     if (token && storedUser) {
       setUser(storedUser);
     }
-    
-    setLoading(false);
+
+    // Verifica sessão do Supabase (para Google OAuth)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        // Usuário logado via Google OAuth
+        const googleUser = {
+          id: session.user.id,
+          email: session.user.email,
+          nome: session.user.user_metadata.full_name || session.user.user_metadata.name || session.user.email.split('@')[0],
+          avatar_url: session.user.user_metadata.avatar_url
+        };
+        
+        // Salva no localStorage também
+        localStorage.setItem('token', session.access_token);
+        localStorage.setItem('user', JSON.stringify(googleUser));
+        
+        setUser(googleUser);
+      }
+      
+      setLoading(false);
+    });
+
+    // Listener para mudanças na autenticação
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        const googleUser = {
+          id: session.user.id,
+          email: session.user.email,
+          nome: session.user.user_metadata.full_name || session.user.user_metadata.name || session.user.email.split('@')[0],
+          avatar_url: session.user.user_metadata.avatar_url
+        };
+        
+        localStorage.setItem('token', session.access_token);
+        localStorage.setItem('user', JSON.stringify(googleUser));
+        
+        setUser(googleUser);
+      } else if (event === 'SIGNED_OUT') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   /**
@@ -71,6 +115,9 @@ export function AuthProvider({ children }) {
    */
   const logout = async () => {
     await authService.logout();
+    await supabase.auth.signOut();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
   };
 
