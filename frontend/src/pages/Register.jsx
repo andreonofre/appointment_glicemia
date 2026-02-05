@@ -1,17 +1,16 @@
 /**
  * PÁGINA DE CADASTRO
  * 
- * Tela para registro de novos usuários.
+ * Cadastro usando Supabase Auth (sem backend Node.js)
  */
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import * as supabaseAuth from '../services/supabaseAuthService';
 import './Register.css';
 
 function Register() {
   const navigate = useNavigate();
-  const { register } = useAuth();
   
   const [formData, setFormData] = useState({
     nome: '',
@@ -57,7 +56,7 @@ function Register() {
     setLoading(true);
     
     try {
-      const response = await register({
+      await supabaseAuth.register({
         nome: formData.nome,
         email: formData.email,
         password: formData.password,
@@ -66,15 +65,19 @@ function Register() {
       });
       
       setSuccess(true);
+      setError('');
       
-      // Redireciona para página de verificação de código
+      // Mostra mensagem de sucesso e redireciona para login
       setTimeout(() => {
-        navigate('/verify-code', { 
-          state: { email: formData.email } 
+        navigate('/login', { 
+          state: { 
+            message: 'Cadastro realizado! Verifique seu email para confirmar sua conta.' 
+          } 
         });
-      }, 1500);
+      }, 2000);
     } catch (err) {
       setError(err.error || 'Erro ao cadastrar. Tente novamente.');
+      setSuccess(false);
     } finally {
       setLoading(false);
     }

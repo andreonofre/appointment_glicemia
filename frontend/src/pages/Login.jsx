@@ -17,14 +17,12 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '../config/supabase';
+import * as supabaseAuth from '../services/supabaseAuthService';
 import './Login.css';
 
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, googleLogin } = useAuth();
   
   // Estado do formulário
   const [formData, setFormData] = useState({
@@ -71,7 +69,7 @@ function Login() {
     setLoading(true);
     
     try {
-      await login(formData.email, formData.password);
+      await supabaseAuth.login(formData.email, formData.password);
       navigate('/painel'); // Redireciona para o painel
     } catch (err) {
       setError(err.error || 'Erro ao fazer login. Verifique suas credenciais.');
@@ -85,34 +83,9 @@ function Login() {
    */
   const handleGoogleLogin = async () => {
     try {
-      console.log('🔐 Iniciando login com Google...');
       setError('');
       setLoading(true);
-
-      // Usa a URL de produção ou local baseado no ambiente
-      const isLocal = window.location.hostname === 'localhost';
-      const baseUrl = isLocal 
-        ? 'http://localhost:5173' 
-        : 'https://appointment-glicemia.vercel.app';
-
-      console.log('🌐 Base URL:', baseUrl);
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${baseUrl}/auth/callback`,
-          skipBrowserRedirect: false
-        }
-      });
-
-      if (error) {
-        console.error('❌ Erro do Supabase ao iniciar OAuth:', error);
-        throw error;
-      }
-
-      console.log('✅ OAuth iniciado, redirecionando para Google...', data);
-      // O Supabase vai redirecionar para o Google automaticamente
-      // Não precisa fazer nada aqui, o redirect é automático
+      await supabaseAuth.loginWithGoogle();
     } catch (err) {
       console.error('❌ Erro ao fazer login com Google:', err);
       setError('Erro ao fazer login com Google.');
