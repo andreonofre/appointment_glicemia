@@ -11,6 +11,10 @@ import Register from './pages/Register';
 import VerifyCode from './pages/VerifyCode';
 import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
+import Registrar from './pages/Registrar';
+import Historico from './pages/Historico';
+import Graficos from './pages/Graficos';
+import Relatorios from './pages/Relatorios';
 import './styles/global.css';
 
 /**
@@ -92,13 +96,11 @@ function App() {
               </PrivateRoute>
             } 
           />
-          
-          {/* Rotas futuras (placeholder por enquanto) */}
           <Route 
             path="/registrar" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Registrar />
               </PrivateRoute>
             } 
           />
@@ -106,7 +108,7 @@ function App() {
             path="/historico" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Historico />
               </PrivateRoute>
             } 
           />
@@ -114,7 +116,7 @@ function App() {
             path="/graficos" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Graficos />
               </PrivateRoute>
             } 
           />
@@ -122,7 +124,7 @@ function App() {
             path="/relatorios" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Relatorios />
               </PrivateRoute>
             } 
           />

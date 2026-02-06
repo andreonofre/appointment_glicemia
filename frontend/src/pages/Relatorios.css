@@ -1,0 +1,56 @@
+.relatorio-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.relatorio-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.relatorio-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.relatorio-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.relatorio-table th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #3da9a4;
+  font-weight: 600;
+}
+
+.relatorio-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.valor-ok {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.valor-alerta {
+  color: #dc3545;
+  font-weight: 600;
+}

@@ -1,41 +1,45 @@
 /**
- * SERVIÇO DE GLICEMIAS
- * 
- * Funções para gerenciar registros de glicemia.
- * 
- * Como usar:
- * - import * as glicemiaService from './services/glicemiaService';
- * - const glicemias = await glicemiaService.list();
- * 
- * Como fazer manutenção:
- * - Para adicionar filtros, modifique os parâmetros das funções
- * - Para adicionar validações, faça antes das chamadas de API
+ * SERVIÇO DE GLICEMIA - SOMENTE SUPABASE
  */
 
-import api from './api';
+import { supabase } from '../config/supabase';
 
-/**
- * Cria novo registro de glicemia
- */
-export const create = async (data) => {
-  try {
-    const response = await api.post('/glicemias', data);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { error: 'Erro ao criar glicemia' };
-  }
+export const create = async (dados) => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Usuário não autenticado');
+
+  const { data, error } = await supabase
+    .from('glicemias')
+    .insert([{
+      user_id: user.id,
+      valor: dados.valor,
+      momento: dados.momento,
+      observacoes: dados.observacoes,
+      data_medicao: dados.data || new().toISOString()
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 };
 
-/**
- * Lista registros de glicemia com filtros opcionais
- */
-export const list = async (filters = {}) => {
-  try {
-    const response = await api.get('/glicemias', { params: filters });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { error: 'Erro ao listar glicemias' };
-  }
+export const list = async (filtros = {}) => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Usuário não autenticado');
+
+  let query = supabase
+    .from('glicemias')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('data_medicao', { ascending: false });
+
+  if (filtros.dataInicio) query = query.gte('data_medicao', filtros.dataInicio);
+  if (filtros.dataFim) query = query.lte('data_medicao', filtros.dataFim);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
 };
 
 /**
@@ -62,26 +66,33 @@ export const update = async (id, data) => {
   }
 };
 
-/**
- * Deleta um registro
- */
 export const remove = async (id) => {
-  try {
-    const response = await api.delete(`/glicemias/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { error: 'Erro ao deletar glicemia' };
-  }
+  const { error } = await supabase
+    .from('glicemias')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
 };
 
-/**
- * Busca estatísticas
- */
-export const getStats = async (dias = 7) => {
-  try {
-    const response = await api.get('/glicemias/stats', { params: { dias } });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { error: 'Erro ao buscar estatísticas' };
-  }
+export const getStats = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { media: 0, total: 0, noAlvo: 0 };
+
+  const { data, error } = await supabase
+    .from('glicemias')
+    .select('valor')
+    .eq('user_id', user.id);
+
+  if (error || !data) return { media: 0, total: 0, noAlvo: 0 };
+
+  const valores = data.map(g => g.valor);
+  const media = valores.length > 0 ? valores.reduce((a, b) => a + b, 0) / valores.length : 0;
+  const noAlvo = valores.filter(v => v >= 70 && v <= 180).length;
+
+  return {
+    media: Math.round(media),
+    total: valores.length,
+    noAlvo,
+    percentualNoAlvo: valores.length > 0 ? Math.round((noAlvo / valores.length) * 100) : 0
+  };
 };

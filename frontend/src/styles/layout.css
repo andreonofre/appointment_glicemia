@@ -1,0 +1,26 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.main-content {
+  margin-left: 280px;
+  flex: 1;
+  padding: 32px;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  color: #333;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
