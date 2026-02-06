@@ -18,16 +18,59 @@ function AuthCallback() {
     
     const handleCallback = async () => {
       try {
-        // O Supabase processa automaticamente o hash fragment da URL
-        // Precisamos aguardar o evento de auth state change
+        // PRIMEIRA TENTATIVA: Processar hash fragment manualmente
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        
+        if (accessToken && refreshToken) {
+          console.log('🔑 Tokens encontrados no hash, estabelecendo sessão...');
+          
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('❌ Erro ao estabelecer sessão:', error);
+            throw error;
+          }
+          
+          if (data.session) {
+            console.log('✅ Sessão estabelecida com sucesso!', data.user.email);
+            
+            // Salva dados do usuário
+            const user = {
+              id: data.user.id,
+              email: data.user.email,
+              nome: data.user.user_metadata.full_name || 
+                    data.user.user_metadata.name || 
+                    data.user.email.split('@')[0],
+              avatar_url: data.user.user_metadata.avatar_url
+            };
+            
+            localStorage.setItem('token', data.session.access_token);
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            console.log('💾 Dados salvos, redirecionando para /painel...');
+            
+            // Redireciona após pequeno delay
+            setTimeout(() => {
+              navigate('/painel', { replace: true });
+            }, 500);
+            
+            return; // Sai da função se deu certo
+          }
+        }
+        
+        // SEGUNDA TENTATIVA: Listener de eventos (fallback)
+        console.log('⏳ Aguardando evento de autenticação...');
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           console.log('🔔 Auth event:', event);
           
-          // Aceita tanto SIGNED_IN quanto INITIAL_SESSION
           if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-            console.log('✅ Sessão criada com sucesso!', session.user.email);
+            console.log('✅ Sessão criada via evento!', session.user.email);
             
-            // Salva dados do usuário
             const user = {
               id: session.user.id,
               email: session.user.email,
@@ -40,29 +83,22 @@ function AuthCallback() {
             localStorage.setItem('token', session.access_token);
             localStorage.setItem('user', JSON.stringify(user));
             
-            console.log('💾 Dados salvos, redirecionando para /painel...');
-            
-            // Pequeno delay para garantir que tudo foi salvo
             setTimeout(() => {
               subscription.unsubscribe();
               navigate('/painel', { replace: true });
             }, 500);
-          } else if (event === 'SIGNED_OUT') {
-            console.log('⚠️ Usuário deslogado');
-            subscription.unsubscribe();
-            navigate('/login');
           }
         });
 
-        // Timeout de segurança - se após 5 segundos não houver sessão, redireciona
+        // Timeout de segurança
         setTimeout(async () => {
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
-            console.log('⏱️ Timeout - Nenhuma sessão encontrada após 5s');
+            console.log('⏱️ Timeout - Nenhuma sessão encontrada após 8s');
             setError('Tempo esgotado. Redirecionando...');
             setTimeout(() => navigate('/login'), 2000);
           }
-        }, 5000);
+        }, 8000);
 
       } catch (err) {
         console.error('❌ Erro no callback:', err);
