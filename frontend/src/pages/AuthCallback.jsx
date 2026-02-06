@@ -23,7 +23,8 @@ function AuthCallback() {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           console.log('🔔 Auth event:', event);
           
-          if (event === 'SIGNED_IN' && session) {
+          // Aceita tanto SIGNED_IN quanto INITIAL_SESSION
+          if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
             console.log('✅ Sessão criada com sucesso!', session.user.email);
             
             // Salva dados do usuário
