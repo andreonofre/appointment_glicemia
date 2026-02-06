@@ -15,7 +15,7 @@ export const create = async (dados) => {
       valor: dados.valor,
       momento: dados.momento,
       observacoes: dados.observacoes,
-      data_medicao: dados.data || new().toISOString()
+      data_medicao: dados.data || new Date().toISOString()
     }])
     .select()
     .single();
