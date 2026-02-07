@@ -24,3 +24,22 @@
   font-weight: 700;
   margin: 0;
 }
+
+/* Responsividade para mobile */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+    padding: 80px 20px 20px 20px; /* Espaço para botão hambúrguer */
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 80px 16px 16px 16px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+}
+

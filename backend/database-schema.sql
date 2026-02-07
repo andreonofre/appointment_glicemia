@@ -37,9 +37,10 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- ==========================================
 CREATE TABLE IF NOT EXISTS glicemias (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   valor INTEGER NOT NULL, -- Valor em mg/dL
   categoria VARCHAR(50) NOT NULL, -- 'jejum', 'pre-refeicao', 'pos-prandial', 'antes-dormir'
+  medicamentos TEXT,
   observacoes TEXT,
   data_hora TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

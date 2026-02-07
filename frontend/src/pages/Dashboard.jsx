@@ -13,9 +13,11 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Activity, Target, TrendingUp, Zap, Plus, Clock, WandSparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import * as glicemiaService from '../services/glicemiaService';
 import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
 import StatsCard from '../components/StatsCard';
 import GlicemiaChart from '../components/GlicemiaChart';
 import IntervalosChart from '../components/IntervalosChart';
@@ -111,22 +113,26 @@ function Dashboard() {
       <main className="dashboard-main">
         {/* Cabeçalho */}
         <header className="dashboard-header">
-          <div>
-            <h1>Olá, {user?.nome || user?.email}! 👋</h1>
-            <p className="dashboard-date">{formatarData()}</p>
+          <div className="header-content">
+            <WandSparkles size={32} className="header-icon" />
+            <div>
+              <h1>Olá, {user?.nome || user?.email?.split('@')[0]}!</h1>
+              <p className="dashboard-date">{formatarData()}</p>
+            </div>
           </div>
           <button 
-            className="btn btn-primary"
+            className="btn btn-primary btn-registrar"
             onClick={() => setShowModal(true)}
           >
-            🩺 Registrar Glicemia
+            <Plus size={20} />
+            Registrar Glicemia
           </button>
         </header>
 
         {/* Cards de Estatísticas */}
         <div className="stats-grid">
           <StatsCard
-            icon="💉"
+            icon={<Activity size={24} />}
             label="Última Medição"
             value={stats?.ultima_medicao?.valor || '--'}
             unit="mg/dL"
@@ -134,7 +140,7 @@ function Dashboard() {
           />
           
           <StatsCard
-            icon="🎯"
+            icon={<Target size={24} />}
             label={`No Alvo (${stats?.periodo_dias || 7}d)`}
             value={stats?.percentual_no_alvo || 0}
             unit="%"
@@ -142,7 +148,7 @@ function Dashboard() {
           />
           
           <StatsCard
-            icon="📊"
+            icon={<TrendingUp size={24} />}
             label={`Média (${stats?.periodo_dias || 7}d)`}
             value={stats?.media_geral || '--'}
             unit="mg/dL"
@@ -150,7 +156,7 @@ function Dashboard() {
           />
           
           <StatsCard
-            icon="📈"
+            icon={<Zap size={24} />}
             label="GMI Estimado"
             value={stats?.gmi_estimado || '--'}
             unit="%"
@@ -174,7 +180,10 @@ function Dashboard() {
         {/* Medições de Hoje */}
         <div className="medicoes-hoje">
           <div className="medicoes-header">
-            <h2>Medições de Hoje</h2>
+            <div className="medicoes-title">
+              <Clock size={24} />
+              <h2>Medições de Hoje</h2>
+            </div>
             {glicemiasHoje.length > 0 && (
               <span className="ver-todas">Ver todas →</span>
             )}
@@ -182,11 +191,13 @@ function Dashboard() {
 
           {glicemiasHoje.length === 0 ? (
             <div className="empty-state">
+              <Activity size={48} className="empty-icon" />
               <p>Nenhuma medição registrada hoje</p>
               <button 
                 className="btn btn-secondary"
                 onClick={() => setShowModal(true)}
               >
+                <Plus size={18} />
                 Registrar primeira medição
               </button>
             </div>
@@ -200,7 +211,9 @@ function Dashboard() {
                       medicao.valor > 180 ? 'alto' : 
                       'normal'
                     }`}
-                  />
+                  >
+                    <Activity size={20} />
+                  </div>
                   <div className="medicao-info">
                     <span className="medicao-categoria">
                       {medicao.categoria.replace('-', ' ')}
@@ -215,6 +228,7 @@ function Dashboard() {
             </div>
           )}
         </div>
+        <Footer />
       </main>
 
       {/* Modal de Registro */}

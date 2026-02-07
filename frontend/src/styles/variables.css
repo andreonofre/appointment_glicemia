@@ -11,48 +11,60 @@
 
 :root {
   /* ==========================================
-   * CORES PRINCIPAIS (baseadas na imagem)
+   * CORES PRINCIPAIS - PALETA PERSONALIZADA
    * ========================================== */
   
-  /* Cor primária - Verde/Teal */
-  --color-primary: #2D9A9A;
-  --color-primary-dark: #1F7A7A;
-  --color-primary-light: #3FAFAF;
-  --color-primary-lighter: #E0F4F4;
+  /* Cor primária - Verde */
+  --color-primary: #79af8d;
+  --color-primary-dark: #6a9b7d;
+  --color-primary-light: #8fc0a0;
+  --color-primary-lighter: #badbc7;
   
-  /* Cor secundária - Laranja (alertas) */
-  --color-secondary: #FF9F43;
-  --color-secondary-light: #FFB870;
+  /* Cor secundária - Rosa */
+  --color-secondary: #db8a94;
+  --color-secondary-dark: #d17580;
+  --color-secondary-light: #e5a4ac;
+  --color-secondary-lighter: #dcaaad;
+  
+  /* Rosa - Destaque */
+  --color-accent: #dcaaad;
+  --color-accent-dark: #d17580;
+  --color-accent-light: #e8bfc1;
+  --color-accent-lighter: #f5e5e6;
+  
+  /* Cinza - Texto e contraste */
+  --color-dark: #737373;
+  --color-dark-gray: #5a5a5a;
   
   /* Cores de status */
-  --color-success: #2ECC71;    /* Verde - No alvo */
-  --color-warning: #F39C12;    /* Laranja - Alto */
-  --color-danger: #E74C3C;     /* Vermelho - Muito alto/baixo */
-  --color-info: #3498DB;       /* Azul - Informações */
+  --color-success: #79af8d;    /* Verde - No alvo */
+  --color-warning: #e5a4ac;    /* Rosa claro - Alto */
+  --color-danger: #db8a94;     /* Rosa - Muito alto/baixo */
+  --color-info: #badbc7;       /* Verde menta - Informações */
   
   /* Tons de cinza */
   --color-white: #FFFFFF;
-  --color-gray-50: #F9FAFB;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1F2937;
-  --color-gray-900: #111827;
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #e0e0e0;
+  --color-gray-400: #bdbdbd;
+  --color-gray-500: #9e9e9e;
+  --color-gray-600: #757575;
+  --color-gray-700: #616161;
+  --color-gray-800: #424242;
+  --color-gray-900: #212121;
   
   /* Cor de texto */
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
-  --color-text-muted: #999999;
+  --color-text-primary: #737373;
+  --color-text-secondary: #9e9e9e;
+  --color-text-muted: #bdbdbd;
   --color-text-white: #FFFFFF;
   
   /* Background */
   --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #F5F5F5;
-  --color-bg-tertiary: #E0F4F4;
+  --color-bg-secondary: #fafafa;
+  --color-bg-tertiary: #badbc7;
   
   /* ==========================================
    * TIPOGRAFIA

@@ -1,0 +1,61 @@
+/**
+ * ESTILOS DO FOOTER
+ */
+
+.app-footer {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  margin-top: 3rem;
+  margin-left: -32px;
+  margin-right: -32px;
+  margin-bottom: -32px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  width: calc(100% + 64px);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--spacing-xs) 0;
+  opacity: 0.95;
+  color: white;
+}
+
+.footer-doctor {
+  font-size: var(--font-size-xs);
+  margin: 0;
+  opacity: 0.85;
+  font-weight: var(--font-weight-medium);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .app-footer {
+    padding: 1rem;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -16px;
+    width: calc(100% + 32px);
+  }
+  
+  .footer-text,
+  .footer-doctor {
+    font-size: var(--font-size-xs);
+    color: white;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app-footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+    width: calc(100% + 40px);
+  }
+}

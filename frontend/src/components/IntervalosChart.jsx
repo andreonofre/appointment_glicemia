@@ -6,19 +6,32 @@
 
 import './IntervalosChart.css';
 
-function IntervalosChart({ stats }) {
-  if (!stats) {
+function IntervalosChart({ data }) {
+  // Se não tiver dados, mostra loading
+  if (!data || data.length === 0) {
     return (
       <div className="chart-empty">
-        <p>Carregando...</p>
+        <p>Sem dados para exibir</p>
       </div>
     );
   }
 
-  const total = stats.total_medicoes || 1;
-  const noAlvo = stats.no_alvo || 0;
-  const alto = stats.hiperglicemias || 0;
-  const baixo = stats.hipoglicemias || 0;
+  // Calcula intervalos
+  const total = data.length;
+  let noAlvo = 0;
+  let alto = 0;
+  let baixo = 0;
+
+  data.forEach(item => {
+    const valor = item.valor;
+    if (valor >= 70 && valor <= 180) {
+      noAlvo++;
+    } else if (valor > 180 && valor <= 250) {
+      alto++;
+    } else {
+      baixo++;
+    }
+  });
 
   const percentNoAlvo = Math.round((noAlvo / total) * 100) || 0;
   const percentAlto = Math.round((alto / total) * 100) || 0;

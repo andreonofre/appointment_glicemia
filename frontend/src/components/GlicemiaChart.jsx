@@ -5,7 +5,7 @@
  * Usa biblioteca Recharts.
  */
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Scatter } from 'recharts';
 import './GlicemiaChart.css';
 
 function GlicemiaChart({ data }) {
@@ -27,6 +27,8 @@ function GlicemiaChart({ data }) {
         }),
         valor: item.valor,
         categoria: item.categoria,
+        medicamentos: item.medicamentos,
+        temMedicamento: item.medicamentos ? item.valor : null, // Para mostrar ponto especial
       }))
       .reverse();
   };
@@ -46,6 +48,11 @@ function GlicemiaChart({ data }) {
             <strong>{data.valor} mg/dL</strong>
           </p>
           <p className="tooltip-categoria">{data.categoria.replace('-', ' ')}</p>
+          {data.medicamentos && (
+            <p className="tooltip-medicamento">
+              💊 {data.medicamentos}
+            </p>
+          )}
         </div>
       );
     }
@@ -83,25 +90,32 @@ function GlicemiaChart({ data }) {
           {/* Linhas de referência */}
           <ReferenceLine 
             y={70} 
-            stroke="#e74c3c" 
+            stroke="#E8A8B8" 
             strokeDasharray="3 3" 
-            label={{ value: 'Baixo', position: 'right', fill: '#e74c3c' }}
+            label={{ value: 'Baixo', position: 'right', fill: '#E8A8B8' }}
           />
           <ReferenceLine 
             y={180} 
-            stroke="#f39c12" 
+            stroke="#F5A862" 
             strokeDasharray="3 3"
-            label={{ value: 'Alto', position: 'right', fill: '#f39c12' }}
+            label={{ value: 'Alto', position: 'right', fill: '#F5A862' }}
           />
           
           {/* Linha principal */}
           <Line 
             type="monotone" 
             dataKey="valor" 
-            stroke="#2D9A9A" 
+            stroke="#7BCCC4" 
             strokeWidth={3}
-            dot={{ fill: '#2D9A9A', r: 5 }}
+            dot={{ fill: '#7BCCC4', r: 5 }}
             activeDot={{ r: 7 }}
+          />
+          
+          {/* Pontos especiais para medicamentos */}
+          <Scatter 
+            dataKey="temMedicamento" 
+            fill="#E8A8B8" 
+            shape="circle"
           />
         </LineChart>
       </ResponsiveContainer>

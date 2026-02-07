@@ -18,22 +18,51 @@
 .dashboard-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: var(--spacing-2xl);
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--color-primary-lighter) 0%, var(--color-white) 100%);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.header-icon {
+  color: var(--color-primary);
+  background: var(--color-white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .dashboard-header h1 {
   font-size: var(--font-size-3xl);
   color: var(--color-text-primary);
-  margin-bottom: var(--spacing-xs);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: var(--font-weight-bold);
 }
 
 .dashboard-date {
   color: var(--color-text-secondary);
   font-size: var(--font-size-base);
   text-transform: capitalize;
+  margin: 0;
+}
+
+.btn-registrar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
 }
 
 .stats-grid {
@@ -77,26 +106,55 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.medicoes-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.medicoes-title svg {
+  color: var(--color-primary);
+}
+
 .medicoes-header h2 {
   font-size: var(--font-size-lg);
   margin: 0;
+  font-weight: var(--font-weight-bold);
 }
 
 .ver-todas {
   color: var(--color-primary);
   font-size: var(--font-size-sm);
   cursor: pointer;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
 }
 
 .ver-todas:hover {
-  text-decoration: underline;
+  color: var(--color-primary-dark);
+  transform: translateX(4px);
 }
 
 .empty-state {
   text-align: center;
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-3xl);
   color: var(--color-text-secondary);
+}
+
+.empty-icon {
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .empty-state p {
@@ -125,21 +183,28 @@
 }
 
 .medicao-indicator {
-  width: 4px;
-  height: 40px;
-  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .medicao-indicator.normal {
-  background: var(--color-success);
+  background: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
 }
 
 .medicao-indicator.alto {
-  background: var(--color-warning);
+  background: #FFF4E6;
+  color: var(--color-warning);
 }
 
 .medicao-indicator.baixo {
-  background: var(--color-danger);
+  background: var(--color-accent-lighter);
+  color: var(--color-accent-dark);
 }
 
 .medicao-info {

@@ -131,11 +131,19 @@ export function AuthProvider({ children }) {
    * Faz logout
    */
   const logout = async () => {
-    await authService.logout();
-    await supabase.auth.signOut();
+    console.log('🚪 Fazendo logout...');
+    
+    // Limpa tudo primeiro
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    
+    // Depois faz logout no Supabase
+    await supabase.auth.signOut();
+    await authService.logout();
+    
+    // Força redirecionamento imediato
+    window.location.href = '/login';
   };
 
   /**

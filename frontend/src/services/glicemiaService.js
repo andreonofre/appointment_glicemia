@@ -8,15 +8,22 @@ export const create = async (dados) => {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Usuário não autenticado');
 
+  const payload = {
+    user_id: user.id,
+    valor: dados.valor,
+    categoria: dados.momento || dados.categoria,
+    observacoes: dados.observacoes,
+    data_hora: dados.data_hora || dados.data || new Date().toISOString()
+  };
+
+  // Adiciona medicamentos se existir no schema
+  if (dados.medicamentos) {
+    payload.medicamentos = dados.medicamentos;
+  }
+
   const { data, error } = await supabase
     .from('glicemias')
-    .insert([{
-      user_id: user.id,
-      valor: dados.valor,
-      categoria: dados.momento || dados.categoria,
-      observacoes: dados.observacoes,
-      data_hora: dados.data || new Date().toISOString()
-    }])
+    .insert([payload])
     .select()
     .single();
 
