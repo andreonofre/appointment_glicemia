@@ -13,9 +13,9 @@ export const create = async (dados) => {
     .insert([{
       user_id: user.id,
       valor: dados.valor,
-      momento: dados.momento,
+      categoria: dados.momento || dados.categoria,
       observacoes: dados.observacoes,
-      data_medicao: dados.data || new Date().toISOString()
+      data_hora: dados.data || new Date().toISOString()
     }])
     .select()
     .single();
@@ -32,10 +32,10 @@ export const list = async (filtros = {}) => {
     .from('glicemias')
     .select('*')
     .eq('user_id', user.id)
-    .order('data_medicao', { ascending: false });
+    .order('data_hora', { ascending: false });
 
-  if (filtros.dataInicio) query = query.gte('data_medicao', filtros.dataInicio);
-  if (filtros.dataFim) query = query.lte('data_medicao', filtros.dataFim);
+  if (filtros.dataInicio) query = query.gte('data_hora', filtros.dataInicio);
+  if (filtros.dataFim) query = query.lte('data_hora', filtros.dataFim);
 
   const { data, error } = await query;
   if (error) throw error;
