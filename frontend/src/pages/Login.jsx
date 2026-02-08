@@ -185,13 +185,6 @@ function Login() {
             </p>
           </div>
         </form>
-
-        {/* Dados de teste */}
-        <div className="test-credentials">
-          <p className="test-label">🔍 Dados de teste:</p>
-          <p className="test-info">Email: teste@glico.com</p>
-          <p className="test-info">Senha: teste123</p>
-        </div>
       </div>
     </div>
   );

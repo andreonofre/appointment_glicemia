@@ -10,18 +10,24 @@ import Footer from '../components/Footer';
 import GlicemiaChart from '../components/GlicemiaChart';
 import IntervalosChart from '../components/IntervalosChart';
 import * as glicemiaService from '../services/glicemiaService';
+import * as profileService from '../services/profileService';
 import './Graficos.css';
 
 function Graficos() {
   const [glicemias, setGlicemias] = useState([]);
+  const [metas, setMetas] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const carregar = async () => {
       try {
-        const data = await glicemiaService.list();
-        setGlicemias(data);
+        const [dataGlicemias, dataMetas] = await Promise.all([
+          glicemiaService.list(),
+          profileService.getUserProfile()
+        ]);
+        setGlicemias(dataGlicemias);
+        setMetas(dataMetas);
       } catch (err) {
         console.error(err);
       } finally {
@@ -101,11 +107,11 @@ function Graficos() {
           <div className="charts-grid">
             <div className="chart-card">
               <h2>Glicemia nos Últimos 7 Dias</h2>
-              <GlicemiaChart data={glicemias.slice(0, 7)} />
+              <GlicemiaChart data={glicemias.slice(0, 7)} metas={metas} />
             </div>
             <div className="chart-card">
               <h2>Tempo nos Intervalos</h2>
-              <IntervalosChart data={glicemias} />
+              <IntervalosChart data={glicemias} metas={metas} />
             </div>
           </div>
         )}

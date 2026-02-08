@@ -7,14 +7,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabase';
+import * as profileService from '../services/profileService';
 
 function AuthCallback() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   useEffect(() => {
-    console.log('🔄 AuthCallback: Processando retorno do OAuth...');
-    console.log('📍 URL atual:', window.location.href);
+    // console.log('🔄 AuthCallback: Processando retorno do OAuth...');
+    // console.log('📍 URL atual:', window.location.href);
     
     const handleCallback = async () => {
       try {
@@ -24,7 +25,7 @@ function AuthCallback() {
         const refreshToken = hashParams.get('refresh_token');
         
         if (accessToken && refreshToken) {
-          console.log('🔑 Tokens encontrados no hash, estabelecendo sessão...');
+          // console.log('🔑 Tokens encontrados no hash, estabelecendo sessão...');
           
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
@@ -32,12 +33,12 @@ function AuthCallback() {
           });
           
           if (error) {
-            console.error('❌ Erro ao estabelecer sessão:', error);
+            // console.error('❌ Erro ao estabelecer sessão:', error);
             throw error;
           }
           
           if (data.session) {
-            console.log('✅ Sessão estabelecida com sucesso!', data.user.email);
+            // console.log('✅ Sessão estabelecida com sucesso!', data.user.email);
             
             // Salva dados do usuário
             const user = {
@@ -52,24 +53,34 @@ function AuthCallback() {
             localStorage.setItem('token', data.session.access_token);
             localStorage.setItem('user', JSON.stringify(user));
             
-            console.log('💾 Dados salvos, redirecionando para /painel...');
+            // console.log('📋 Verificando se o perfil está completo...');
             
-            // Redireciona após pequeno delay
-            setTimeout(() => {
-              navigate('/painel', { replace: true });
-            }, 500);
+            // Verifica se o perfil está completo
+            const perfilCompleto = await profileService.isProfileComplete();
+            
+            if (perfilCompleto) {
+              // console.log('✅ Perfil completo, redirecionando para /painel...');
+              setTimeout(() => {
+                navigate('/painel', { replace: true });
+              }, 500);
+            } else {
+              // console.log('📝 Perfil incompleto, redirecionando para /completar-perfil...');
+              setTimeout(() => {
+                navigate('/completar-perfil', { replace: true });
+              }, 500);
+            }
             
             return; // Sai da função se deu certo
           }
         }
         
         // SEGUNDA TENTATIVA: Listener de eventos (fallback)
-        console.log('⏳ Aguardando evento de autenticação...');
+        // console.log('⏳ Aguardando evento de autenticação...');
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log('🔔 Auth event:', event);
+          // console.log('🔔 Auth event:', event);
           
           if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-            console.log('✅ Sessão criada via evento!', session.user.email);
+            // console.log('✅ Sessão criada via evento!', session.user.email);
             
             const user = {
               id: session.user.id,
@@ -83,9 +94,16 @@ function AuthCallback() {
             localStorage.setItem('token', session.access_token);
             localStorage.setItem('user', JSON.stringify(user));
             
+            // Verifica se o perfil está completo
+            const perfilCompleto = await profileService.isProfileComplete();
+            
             setTimeout(() => {
               subscription.unsubscribe();
-              navigate('/painel', { replace: true });
+              if (perfilCompleto) {
+                navigate('/painel', { replace: true });
+              } else {
+                navigate('/completar-perfil', { replace: true });
+              }
             }, 500);
           }
         });
@@ -94,14 +112,14 @@ function AuthCallback() {
         setTimeout(async () => {
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
-            console.log('⏱️ Timeout - Nenhuma sessão encontrada após 8s');
+            // console.log('⏱️ Timeout - Nenhuma sessão encontrada após 8s');
             setError('Tempo esgotado. Redirecionando...');
             setTimeout(() => navigate('/login'), 2000);
           }
         }, 8000);
 
       } catch (err) {
-        console.error('❌ Erro no callback:', err);
+        // console.error('❌ Erro no callback:', err);
         setError('Erro ao processar autenticação');
         setTimeout(() => navigate('/login?error=callback_error'), 2000);
       }

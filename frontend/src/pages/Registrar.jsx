@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react';
-import { Activity, Calendar, Pill, FileText, Save, CheckCircle, TrendingUp } from 'lucide-react';
+import { Activity, Calendar, Pill, FileText, Save, TrendingUp } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
@@ -58,102 +58,123 @@ function Registrar() {
     <div className="app-container">
       <Sidebar />
       <main className="main-content">
-        <div className="registrar-hero">
-          <div className="registrar-hero-content">
-            <div className="hero-icon-wrapper">
-              <Activity className="hero-icon" size={36} />
+        <div className="page-header-styled">
+          <div className="header-wrapper">
+            <div className="header-icon-box">
+              <Activity className="header-icon-animated" size={32} />
             </div>
-            <h1>Registrar Medição de Glicemia</h1>
-            <p>Monitore sua glicemia de forma simples e eficaz</p>
+            <div className="header-text">
+              <h1>Registrar Medição de Glicemia</h1>
+              <p>Monitore sua glicemia de forma simples e eficaz</p>
+            </div>
           </div>
         </div>
 
-        <div className="register-card">
-          <form onSubmit={handleSubmit} className="registrar-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label>
+        <div className="registrar-container">
+          <div className="register-card">
+            <form onSubmit={handleSubmit} className="registrar-form">
+              <div className="form-group form-highlight">
+                <label htmlFor="valor">
                   <TrendingUp size={18} />
-                  Valor (mg/dL)
+                  Valor da Glicemia *
                 </label>
-                <input
-                  type="number"
-                  value={formData.valor}
-                  onChange={(e) => setFormData({...formData, valor: e.target.value})}
-                  required
-                  placeholder="Ex: 120"
-                  min="20"
-                  max="600"
-                />
+                <div className="input-with-unit">
+                  <input
+                    type="number"
+                    id="valor"
+                    name="valor"
+                    value={formData.valor}
+                    onChange={(e) => setFormData({...formData, valor: e.target.value})}
+                    placeholder="150"
+                    disabled={loading}
+                    min="20"
+                    max="600"
+                    required
+                  />
+                  <span className="input-unit">mg/dL</span>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="categoria">
+                    <FileText size={18} />
+                    Momento *
+                  </label>
+                  <select
+                    id="categoria"
+                    name="categoria"
+                    value={formData.categoria}
+                    onChange={(e) => setFormData({...formData, categoria: e.target.value})}
+                    disabled={loading}
+                    className="momento-select"
+                  >
+                    <option value="jejum">Jejum</option>
+                    <option value="pre-cafe">Pré-café</option>
+                    <option value="pos-cafe">Pós-café</option>
+                    <option value="pre-almoco">Pré-almoço</option>
+                    <option value="pos-almoco">Pós-almoço</option>
+                    <option value="pre-jantar">Pré-jantar</option>
+                    <option value="pos-jantar">Pós-jantar</option>
+                    <option value="antes-dormir">Antes de dormir</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="data_hora">
+                    <Calendar size={18} />
+                    Data e Hora
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="data_hora"
+                    name="data_hora"
+                    value={formData.data_hora}
+                    onChange={(e) => setFormData({...formData, data_hora: e.target.value})}
+                    disabled={loading}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="form-group">
-                <label>
-                  <CheckCircle size={18} />
-                  Momento
-                </label>
-                <select
-                  value={formData.categoria}
-                  onChange={(e) => setFormData({...formData, categoria: e.target.value})}
-                >
-                  <option value="jejum">Jejum</option>
-                  <option value="pre-cafe">Pré-café</option>
-                  <option value="pos-cafe">Pós-café</option>
-                  <option value="pre-almoco">Pré-almoço</option>
-                  <option value="pos-almoco">Pós-almoço</option>
-                  <option value="pre-jantar">Pré-jantar</option>
-                  <option value="pos-jantar">Pós-jantar</option>
-                  <option value="antes-dormir">Antes de dormir</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>
-                  <Calendar size={18} />
-                  Data e Hora
-                </label>
-                <input
-                  type="datetime-local"
-                  value={formData.data_hora}
-                  onChange={(e) => setFormData({...formData, data_hora: e.target.value})}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>
+                <label htmlFor="medicamentos">
                   <Pill size={18} />
-                  Medicamentos (opcional)
+                  Medicamentos/Insulina (opcional)
                 </label>
                 <input
                   type="text"
+                  id="medicamentos"
+                  name="medicamentos"
                   value={formData.medicamentos}
                   onChange={(e) => setFormData({...formData, medicamentos: e.target.value})}
-                  placeholder="Ex: Metformina 500mg"
+                  placeholder="Ex: Metformina 500mg, Insulina NPH 10u..."
+                  disabled={loading}
                 />
               </div>
-            </div>
 
-            <div className="form-group full-width">
-              <label>
-                <FileText size={18} />
-                Observações (opcional)
-              </label>
-              <textarea
-                value={formData.observacoes}
-                onChange={(e) => setFormData({...formData, observacoes: e.target.value})}
-                rows="4"
-                placeholder="Ex: Após exercício físico, sintomas de hipoglicemia..."
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="observacoes">
+                  <FileText size={18} />
+                  Observações (opcional)
+                </label>
+                <textarea
+                  id="observacoes"
+                  name="observacoes"
+                  value={formData.observacoes}
+                  onChange={(e) => setFormData({...formData, observacoes: e.target.value})}
+                  rows="4"
+                  placeholder="Ex: Após exercício físico, sintomas de hipoglicemia..."
+                  disabled={loading}
+                />
+              </div>
 
-            <button type="submit" disabled={loading} className="btn-submit">
-              <Save size={20} />
-              {loading ? 'Salvando...' : 'Registrar Glicemia'}
-            </button>
-          </form>
+              <button type="submit" disabled={loading} className="btn-submit">
+                <Save size={20} />
+                {loading ? 'Salvando...' : 'Registrar Glicemia'}
+              </button>
+            </form>
+          </div>
         </div>
         <Footer />
       </main>

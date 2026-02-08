@@ -13,6 +13,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Activity, Target, TrendingUp, Zap, Plus, Clock, WandSparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import * as glicemiaService from '../services/glicemiaService';
@@ -26,6 +27,7 @@ import './Dashboard.css';
 
 function Dashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [glicemias, setGlicemias] = useState([]);
   const [glicemiasHoje, setGlicemiasHoje] = useState([]);
@@ -112,10 +114,12 @@ function Dashboard() {
       
       <main className="dashboard-main">
         {/* Cabeçalho */}
-        <header className="dashboard-header">
-          <div className="header-content">
-            <WandSparkles size={32} className="header-icon" />
-            <div>
+        <header className="page-header-styled">
+          <div className="header-wrapper">
+            <div className="header-icon-box header-icon-animated">
+              <WandSparkles size={32} />
+            </div>
+            <div className="header-text">
               <h1>Olá, {user?.nome || user?.email?.split('@')[0]}!</h1>
               <p className="dashboard-date">{formatarData()}</p>
             </div>
@@ -173,7 +177,7 @@ function Dashboard() {
 
           <div className="chart-container">
             <h2>Tempo nos Intervalos</h2>
-            <IntervalosChart stats={stats} />
+            <IntervalosChart data={glicemias} metas={stats?.metas} />
           </div>
         </div>
 
@@ -185,7 +189,13 @@ function Dashboard() {
               <h2>Medições de Hoje</h2>
             </div>
             {glicemiasHoje.length > 0 && (
-              <span className="ver-todas">Ver todas →</span>
+              <span 
+                className="ver-todas" 
+                onClick={() => navigate('/historico')}
+                style={{ cursor: 'pointer' }}
+              >
+                Ver todas →
+              </span>
             )}
           </div>
 

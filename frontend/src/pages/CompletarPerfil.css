@@ -1,0 +1,82 @@
+/**
+ * ESTILOS DA PÁGINA DE COMPLETAR PERFIL
+ */
+
+.completar-perfil-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.completar-perfil-card {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  width: 100%;
+  max-width: 700px;
+  overflow: hidden;
+  animation: slideIn 0.4s ease-out;
+  margin: var(--spacing-lg) 0;
+}
+
+.completar-perfil-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-white);
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  text-align: center;
+}
+
+.completar-perfil-header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.completar-perfil-header .logo-icon {
+  font-size: var(--font-size-3xl);
+}
+
+.completar-perfil-header .logo h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.completar-perfil-header h2 {
+  font-size: var(--font-size-xl);
+  margin: var(--spacing-md) 0 var(--spacing-sm);
+}
+
+.completar-perfil-header .subtitle {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.completar-perfil-form {
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .completar-perfil-form {
+    max-height: 60vh;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

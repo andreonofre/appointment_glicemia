@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { FileText, Download, Calendar, Activity, Target, TrendingUp, TrendingDown } from 'lucide-react';
+import { toast } from 'react-toastify';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import * as glicemiaService from '../services/glicemiaService';
@@ -39,6 +40,7 @@ function Relatorios() {
       setGlicemias(data);
     } catch (err) {
       console.error(err);
+      toast.error('Erro ao carregar medições');
     } finally {
       setLoading(false);
     }
@@ -112,7 +114,7 @@ function Relatorios() {
    */
   const handleGerarPDF = async () => {
     if (glicemiasFiltradas.length === 0) {
-      alert('Nenhum dado para gerar relatório');
+      toast.warning('Nenhum dado para gerar relatório');
       return;
     }
 
@@ -124,9 +126,10 @@ function Relatorios() {
         dataInicio,
         dataFim,
       });
+      toast.success('PDF gerado com sucesso!');
     } catch (err) {
       console.error('Erro ao gerar PDF:', err);
-      alert('Erro ao gerar PDF');
+      toast.error('Erro ao gerar PDF: ' + (err.message || 'Verifique o console para mais detalhes'));
     } finally {
       setGerando(false);
     }
@@ -138,151 +141,142 @@ function Relatorios() {
     <div className="app-container">
       <Sidebar />
       <main className="main-content">
-        <div className="relatorios-hero">
-          <div className="hero-content">
-            <div className="hero-icon-wrapper">
-              <FileText className="hero-icon" size={36} />
+        <div className="page-header-styled">
+          <div className="header-wrapper">
+            <div className="header-icon-box">
+              <FileText size={32} />
             </div>
-            <h1>Relatórios em PDF</h1>
-            <p>Gere relatórios detalhados do seu controle glicêmico</p>
+            <div className="header-text">
+              <h1>Relatórios</h1>
+              <p>Gere relatórios em PDF com suas estatísticas de glicemia</p>
+            </div>
           </div>
         </div>
 
-        {/* Seleção de período */}
+        {/* Seleção de Período */}
         <div className="periodo-selector">
-          <Calendar size={20} />
-          <div className="periodo-inputs">
+          <h3><Calendar size={20} /> Período do Relatório</h3>
+          <div className="datas-input">
             <div className="input-group">
-              <label>Data Início</label>
+              <label>Data Inicial:</label>
               <input 
                 type="date" 
-                value={dataInicio}
+                value={dataInicio} 
                 onChange={(e) => setDataInicio(e.target.value)}
               />
             </div>
             <div className="input-group">
-              <label>Data Fim</label>
+              <label>Data Final:</label>
               <input 
                 type="date" 
-                value={dataFim}
+                value={dataFim} 
                 onChange={(e) => setDataFim(e.target.value)}
               />
             </div>
           </div>
-          <button 
-            className="btn-gerar-pdf" 
-            onClick={handleGerarPDF}
-            disabled={gerando}
-          >
-            <Download size={20} />
-            {gerando ? 'Gerando...' : 'Gerar PDF'}
-          </button>
         </div>
 
-        <div className="relatorio-grid">
-          {/* Card Resumo Geral */}
-          <div className="relatorio-card">
-            <h3>
-              <Activity size={20} />
-              Resumo do Período
-            </h3>
-            <div className="stat-row">
-              <span>Total de Medições:</span>
-              <strong>{stats.total}</strong>
-            </div>
-            <div className="stat-row">
-              <span>Média Geral:</span>
-              <strong>{stats.media} mg/dL</strong>
-            </div>
-            <div className="stat-row">
-              <span>GMI Estimado:</span>
-              <strong>{stats.gmi}%</strong>
+        {/* Estatísticas */}
+        <div className="stats-relatorio">
+          <div className="stat-card">
+            <Activity size={24} />
+            <div className="stat-content">
+              <h4>Resumo do Período</h4>
+              <p className="stat-value">{stats.total} medições</p>
+              <p className="stat-detail">Média: <strong>{stats.media} mg/dL</strong></p>
+              <p className="stat-detail">GMI estimado: <strong>{stats.gmi}%</strong></p>
             </div>
           </div>
-
-          {/* Card Intervalos */}
-          <div className="relatorio-card">
-            <h3>
-              <Target size={20} />
-              Tempo nos Intervalos
-            </h3>
-            <div className="stat-row interval-success">
-              <span>
-                <TrendingUp size={16} />
-                No Alvo (70-180):
-              </span>
-              <strong>{stats.noAlvo} ({stats.percentualNoAlvo}%)</strong>
-            </div>
-            <div className="stat-row interval-warning">
-              <span>
-                <TrendingUp size={16} />
-                Alto (181-250):
-              </span>
-              <strong>{stats.alto} ({stats.percentualAlto}%)</strong>
-            </div>
-            <div className="stat-row interval-danger">
-              <span>
-                <TrendingUp size={16} />
-                Muito Alto (&gt;250):
-              </span>
-              <strong>{stats.muitoAlto} ({stats.percentualMuitoAlto}%)</strong>
-            </div>
-            <div className="stat-row interval-danger">
-              <span>
-                <TrendingDown size={16} />
-                Baixo (&lt;70):
-              </span>
-              <strong>{stats.baixo} ({stats.percentualBaixo}%)</strong>
+          
+          <div className="stat-card stat-alvo">
+            <Target size={24} />
+            <div className="stat-content">
+              <h4>Tempo nos Intervalos</h4>
+              <div className="intervalos-list">
+                <div className="intervalo-item normal">
+                  <span className="intervalo-label">No alvo (70-180):</span>
+                  <span className="intervalo-valor">{stats.percentualNoAlvo}%</span>
+                </div>
+                <div className="intervalo-item alto">
+                  <span className="intervalo-label">Alto (181-250):</span>
+                  <span className="intervalo-valor">{stats.percentualAlto}%</span>
+                </div>
+                <div className="intervalo-item muito-alto">
+                  <span className="intervalo-label">Muito alto (&gt;250):</span>
+                  <span className="intervalo-valor">{stats.percentualMuitoAlto}%</span>
+                </div>
+                <div className="intervalo-item baixo">
+                  <span className="intervalo-label">Baixo (&lt;70):</span>
+                  <span className="intervalo-valor">{stats.percentualBaixo}%</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Tabela de Últimas Medições */}
-        <div className="relatorio-section">
-          <h2>
-            <FileText size={24} />
-            Últimas Medições
-          </h2>
-          <div className="table-wrapper">
-            <table className="relatorio-table">
+        {/* Últimas 20 medições */}
+        <div className="ultimas-medicoes">
+          <h3>Últimas 20 Medições do Período</h3>
+          <div className="tabela-medicoes-wrapper">
+            <table className="tabela-medicoes">
               <thead>
                 <tr>
                   <th>Data/Hora</th>
                   <th>Valor</th>
                   <th>Categoria</th>
-                  <th>Medicamento</th>
-                  <th>Observações</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {glicemiasFiltradas.slice(0, 20).map(g => (
-                  <tr key={g.id}>
-                    <td>
-                      {new Date(g.data_hora).toLocaleDateString('pt-BR')}
-                      {' '}
-                      {new Date(g.data_hora).toLocaleTimeString('pt-BR', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </td>
-                    <td>
-                      <span className={`valor-badge ${
-                        g.valor < 70 ? 'baixo' : 
-                        g.valor <= 180 ? 'normal' : 
-                        g.valor <= 250 ? 'alto' : 'muito-alto'
-                      }`}>
-                        {g.valor} mg/dL
-                      </span>
-                    </td>
-                    <td>{g.categoria}</td>
-                    <td>{g.medicamentos || '-'}</td>
-                    <td className="obs-cell">{g.observacoes || '-'}</td>
-                  </tr>
-                ))}
+                {glicemiasFiltradas.slice(0, 20).map((g, idx) => {
+                  let statusClass = 'normal';
+                  let statusText = 'Normal';
+                  if (g.valor < 70) {
+                    statusClass = 'baixo';
+                    statusText = 'Baixo';
+                  } else if (g.valor > 180 && g.valor <= 250) {
+                    statusClass = 'alto';
+                    statusText = 'Alto';
+                  } else if (g.valor > 250) {
+                    statusClass = 'muito-alto';
+                    statusText = 'Muito Alto';
+                  }
+
+                  return (
+                    <tr key={idx}>
+                      <td>{new Date(g.data_hora).toLocaleString('pt-BR')}</td>
+                      <td className="valor-col"><strong>{g.valor} mg/dL</strong></td>
+                      <td>{g.categoria}</td>
+                      <td><span className={`status-badge ${statusClass}`}>{statusText}</span></td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </div>
+
+        {/* Botão Gerar PDF */}
+        <div className="acoes-relatorio">
+          <button 
+            className="btn-gerar-pdf" 
+            onClick={handleGerarPDF}
+            disabled={gerando || glicemiasFiltradas.length === 0}
+          >
+            {gerando ? (
+              <>
+                <Download size={20} className="icon-spin" />
+                Gerando PDF...
+              </>
+            ) : (
+              <>
+                <Download size={20} />
+                Gerar PDF
+              </>
+            )}
+          </button>
+        </div>
+
         <Footer />
       </main>
     </div>

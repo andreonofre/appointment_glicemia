@@ -16,9 +16,24 @@ import { supabase } from '../config/supabase';
  * Cadastro de novo usuário com Email/Senha
  */
 export async function register(userData) {
-  const { email, password, nome, idade, tipoDiabetes } = userData;
+  const { 
+    email, 
+    password, 
+    nome, 
+    idade, 
+    dataNascimento, 
+    endereco, 
+    contato, 
+    tipoDiabetes, 
+    medicamentosUso,
+    metaJejumMin,
+    metaJejumMax,
+    metaPosPrandialMax,
+    metaGlicemiaMin,
+    metaGlicemiaMax
+  } = userData;
 
-  console.log('📝 Registrando usuário no Supabase Auth...');
+  // console.log('📝 Registrando usuário no Supabase Auth...');
 
   // Cadastra no Supabase Auth
   const { data, error } = await supabase.auth.signUp({
@@ -28,18 +43,27 @@ export async function register(userData) {
       data: {
         nome,
         idade,
-        tipo_diabetes: tipoDiabetes
+        data_nascimento: dataNascimento,
+        endereco,
+        contato,
+        tipo_diabetes: tipoDiabetes,
+        medicamentos_uso: medicamentosUso,
+        meta_jejum_min: metaJejumMin,
+        meta_jejum_max: metaJejumMax,
+        meta_pos_prandial_max: metaPosPrandialMax,
+        meta_glicemia_min: metaGlicemiaMin,
+        meta_glicemia_max: metaGlicemiaMax
       }
     }
   });
 
   if (error) {
-    console.error('❌ Erro ao cadastrar:', error);
+    // console.error('❌ Erro ao cadastrar:', error);
     throw { error: error.message };
   }
 
-  console.log('✅ Usuário cadastrado com sucesso!');
-  console.log('📧 Email de confirmação enviado para:', email);
+  // console.log('✅ Usuário cadastrado com sucesso!');
+  // console.log('📧 Email de confirmação enviado para:', email);
 
   return {
     message: 'Cadastro realizado! Verifique seu email para confirmar.',
@@ -51,7 +75,7 @@ export async function register(userData) {
  * Login com Email/Senha
  */
 export async function login(email, password) {
-  console.log('🔐 Fazendo login...');
+  // console.log('🔐 Fazendo login...');
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -59,11 +83,11 @@ export async function login(email, password) {
   });
 
   if (error) {
-    console.error('❌ Erro ao fazer login:', error);
+    // console.error('❌ Erro ao fazer login:', error);
     throw { error: error.message };
   }
 
-  console.log('✅ Login bem-sucedido!');
+  // console.log('✅ Login bem-sucedido!');
 
   const user = {
     id: data.user.id,
@@ -84,13 +108,13 @@ export async function login(email, password) {
  * Logout
  */
 export async function logout() {
-  console.log('👋 Fazendo logout...');
+  // console.log('👋 Fazendo logout...');
   
   await supabase.auth.signOut();
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   
-  console.log('✅ Logout realizado');
+  // console.log('✅ Logout realizado');
 }
 
 /**
@@ -105,7 +129,7 @@ export function getStoredUser() {
  * Login com Google OAuth
  */
 export async function loginWithGoogle() {
-  console.log('🔐 Iniciando login com Google...');
+  // console.log('🔐 Iniciando login com Google...');
 
   const isLocal = window.location.hostname === 'localhost';
   const baseUrl = isLocal 
@@ -120,10 +144,10 @@ export async function loginWithGoogle() {
   });
 
   if (error) {
-    console.error('❌ Erro ao iniciar OAuth:', error);
+    // console.error('❌ Erro ao iniciar OAuth:', error);
     throw error;
   }
 
-  console.log('✅ Redirecionando para Google...');
+  // console.log('✅ Redirecionando para Google...');
   return data;
 }

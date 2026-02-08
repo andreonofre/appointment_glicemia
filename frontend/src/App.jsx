@@ -10,11 +10,15 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyCode from './pages/VerifyCode';
 import AuthCallback from './pages/AuthCallback';
+import CompletarPerfil from './pages/CompletarPerfil';
 import Dashboard from './pages/Dashboard';
+import Perfil from './pages/Perfil';
 import Registrar from './pages/Registrar';
 import Historico from './pages/Historico';
 import Graficos from './pages/Graficos';
 import Relatorios from './pages/Relatorios';
+import TermosUso from './pages/TermosUso';
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import './styles/global.css';
 
 /**
@@ -84,8 +88,22 @@ function App() {
             } 
           />
           
+          {/* Páginas legais - acessíveis sem autenticação */}
+          <Route path="/termos-uso" element={<TermosUso />} />
+          <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
+          
           {/* Rota de callback do OAuth */}
           <Route path="/auth/callback" element={<AuthCallback />} />
+
+          {/* Completar perfil - para usuários que logaram com Google */}
+          <Route 
+            path="/completar-perfil" 
+            element={
+              <PrivateRoute>
+                <CompletarPerfil />
+              </PrivateRoute>
+            } 
+          />
 
           {/* Rotas privadas */}
           <Route 
@@ -93,6 +111,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Dashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/perfil" 
+            element={
+              <PrivateRoute>
+                <Perfil />
               </PrivateRoute>
             } 
           />

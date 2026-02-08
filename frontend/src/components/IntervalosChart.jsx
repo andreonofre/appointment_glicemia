@@ -6,7 +6,10 @@
 
 import './IntervalosChart.css';
 
-function IntervalosChart({ data }) {
+function IntervalosChart({ data, metas }) {
+  // Valores padrão caso não venham metas
+  const metaMin = metas?.meta_glicemia_min || 70;
+  const metaMax = metas?.meta_glicemia_max || 180;
   // Se não tiver dados, mostra loading
   if (!data || data.length === 0) {
     return (
@@ -24,9 +27,9 @@ function IntervalosChart({ data }) {
 
   data.forEach(item => {
     const valor = item.valor;
-    if (valor >= 70 && valor <= 180) {
+    if (valor >= metaMin && valor <= metaMax) {
       noAlvo++;
-    } else if (valor > 180 && valor <= 250) {
+    } else if (valor > metaMax && valor <= 250) {
       alto++;
     } else {
       baixo++;
@@ -78,7 +81,7 @@ function IntervalosChart({ data }) {
           <div className="legend-dot legend-dot-success"></div>
           <div className="legend-text">
             <span className="legend-label">No alvo</span>
-            <span className="legend-range">70-180 mg/dL</span>
+            <span className="legend-range">{metaMin}-{metaMax} mg/dL</span>
             <span className="legend-count">{noAlvo} medições</span>
           </div>
         </div>
@@ -87,7 +90,7 @@ function IntervalosChart({ data }) {
           <div className="legend-dot legend-dot-warning"></div>
           <div className="legend-text">
             <span className="legend-label">Alto</span>
-            <span className="legend-range">181-250 mg/dL</span>
+            <span className="legend-range">{metaMax + 1}-250 mg/dL</span>
             <span className="legend-count">{alto} medições</span>
           </div>
         </div>
@@ -96,7 +99,7 @@ function IntervalosChart({ data }) {
           <div className="legend-dot legend-dot-danger"></div>
           <div className="legend-text">
             <span className="legend-label">Muito alto/baixo</span>
-            <span className="legend-range">&gt;250 ou &lt;70 mg/dL</span>
+            <span className="legend-range">&gt;250 ou &lt;{metaMin} mg/dL</span>
             <span className="legend-count">{baixo} medições</span>
           </div>
         </div>
@@ -104,7 +107,7 @@ function IntervalosChart({ data }) {
 
       {/* Meta */}
       <div className="meta-info">
-        <p>Meta: &gt;70% no alvo (70-180 mg/dL)</p>
+        <p>Meta: &gt;70% no alvo ({metaMin}-{metaMax} mg/dL)</p>
       </div>
     </div>
   );

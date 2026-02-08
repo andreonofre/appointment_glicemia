@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Activity, Clock, BarChart3, FileText, LogOut, Droplet, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Activity, Clock, BarChart3, FileText, LogOut, Droplet, Menu, X, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 
@@ -16,6 +16,7 @@ function Sidebar() {
 
   const menuItems = [
     { Icon: LayoutDashboard, label: 'Painel', path: '/painel' },
+    { Icon: User, label: 'Perfil', path: '/perfil' },
     { Icon: Activity, label: 'Registrar', path: '/registrar' },
     { Icon: Clock, label: 'Histórico', path: '/historico' },
     { Icon: BarChart3, label: 'Gráficos', path: '/graficos' },

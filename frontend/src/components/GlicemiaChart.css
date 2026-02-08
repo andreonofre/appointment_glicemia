@@ -36,6 +36,18 @@
   margin: 0 0 var(--spacing-xs) 0;
 }
 
+.tooltip-value.tooltip-normal {
+  color: var(--color-primary);
+}
+
+.tooltip-value.tooltip-alto {
+  color: var(--color-accent-dark);
+}
+
+.tooltip-value.tooltip-baixo {
+  color: #831843;
+}
+
 .tooltip-categoria {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);

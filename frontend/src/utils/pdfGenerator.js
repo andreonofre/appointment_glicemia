@@ -4,8 +4,8 @@
  * Gera relatórios em PDF com estatísticas e tabelas de glicemia
  */
 
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 /**
  * Gera relatório PDF completo
@@ -76,7 +76,7 @@ export const gerarRelatorioPDF = async ({ glicemias, stats, dataInicio, dataFim 
     ['GMI Estimado', `${stats.gmi}%`],
   ];
   
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     head: [],
     body: resumoData,
@@ -110,7 +110,7 @@ export const gerarRelatorioPDF = async ({ glicemias, stats, dataInicio, dataFim 
     ['Baixo (<70 mg/dL)', `${stats.baixo} (${stats.percentualBaixo}%)`],
   ];
   
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     head: [],
     body: intervalosData,
@@ -171,7 +171,7 @@ export const gerarRelatorioPDF = async ({ glicemias, stats, dataInicio, dataFim 
     ];
   });
   
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPos,
     head: [['Data', 'Hora', 'Valor', 'Categoria', 'Medicamento']],
     body: tableData,

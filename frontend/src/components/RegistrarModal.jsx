@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react';
-import { X, Activity, Calendar, FileText, Pill, Save } from 'lucide-react';
+import { X, Activity, Calendar, FileText, Pill, Save, Coffee, Sun, Utensils, Clock, Moon, Star, FileEdit } from 'lucide-react';
 import { toast } from 'react-toastify';
 import * as glicemiaService from '../services/glicemiaService';
 import './RegistrarModal.css';
@@ -14,7 +14,8 @@ function RegistrarModal({ onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     valor: '',
     categoria: 'jejum',
-    medicamentos: '',
+    medicamentoTipo: '',
+    medicamentoOutro: '',
     observacoes: '',
     data_hora: new Date().toISOString().slice(0, 16),
   });
@@ -47,10 +48,14 @@ function RegistrarModal({ onClose, onSuccess }) {
     setLoading(true);
     
     try {
+      const medicamentos = formData.medicamentoTipo === 'outro' 
+        ? formData.medicamentoOutro 
+        : formData.medicamentoTipo;
+
       await glicemiaService.create({
         valor,
         categoria: formData.categoria,
-        medicamentos: formData.medicamentos,
+        medicamentos,
         observacoes: formData.observacoes,
         data_hora: formData.data_hora,
       });
@@ -103,7 +108,7 @@ function RegistrarModal({ onClose, onSuccess }) {
             <div className="form-group">
               <label htmlFor="categoria">
                 <FileText size={18} />
-                Categoria *
+                Momento *
               </label>
               <select
                 id="categoria"
@@ -111,10 +116,15 @@ function RegistrarModal({ onClose, onSuccess }) {
                 value={formData.categoria}
                 onChange={handleChange}
                 disabled={loading}
+                className="momento-select"
               >
                 <option value="jejum">Jejum</option>
-                <option value="pre-refeicao">Antes das refeições</option>
-                <option value="pos-prandial">Pós-prandial (2h)</option>
+                <option value="pre-cafe">Pré-café</option>
+                <option value="pos-cafe">Pós-café</option>
+                <option value="pre-almoco">Pré-almoço</option>
+                <option value="pos-almoco">Pós-almoço</option>
+                <option value="pre-jantar">Pré-jantar</option>
+                <option value="pos-jantar">Pós-jantar</option>
                 <option value="antes-dormir">Antes de dormir</option>
               </select>
             </div>
@@ -136,20 +146,42 @@ function RegistrarModal({ onClose, onSuccess }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="medicamentos">
+            <label htmlFor="medicamentoTipo">
               <Pill size={18} />
               Medicamentos/Insulina
             </label>
-            <input
-              type="text"
-              id="medicamentos"
-              name="medicamentos"
-              value={formData.medicamentos}
+            <select
+              id="medicamentoTipo"
+              name="medicamentoTipo"
+              value={formData.medicamentoTipo}
               onChange={handleChange}
-              placeholder="Ex: Insulina NPH 10u, Metformina 850mg..."
               disabled={loading}
-            />
+            >
+              <option value="">Selecione...</option>
+              <option value="Insulina Basal">Insulina Basal</option>
+              <option value="Insulina Basal Rápida">Insulina Basal Rápida</option>
+              <option value="Medicamento Oral">Medicamento Oral</option>
+              <option value="outro">Outro</option>
+            </select>
           </div>
+
+          {formData.medicamentoTipo === 'outro' && (
+            <div className="form-group">
+              <label htmlFor="medicamentoOutro">
+                <Pill size={18} />
+                Especifique o medicamento
+              </label>
+              <input
+                type="text"
+                id="medicamentoOutro"
+                name="medicamentoOutro"
+                value={formData.medicamentoOutro}
+                onChange={handleChange}
+                placeholder="Ex: Metformina 850mg, Insulina NPH 10u..."
+                disabled={loading}
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="observacoes">

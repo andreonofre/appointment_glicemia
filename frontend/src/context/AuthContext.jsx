@@ -32,23 +32,23 @@ export function AuthProvider({ children }) {
 
   // Ao carregar, verifica se há usuário logado
   useEffect(() => {
-    console.log('🔍 AuthContext: Verificando autenticação...');
+    // console.log('🔍 AuthContext: Verificando autenticação...');
     
     // Verifica localStorage
     const token = localStorage.getItem('token');
     const storedUser = authService.getStoredUser();
     
     if (token && storedUser) {
-      console.log('✅ Usuário encontrado no localStorage:', storedUser.email);
+      // console.log('✅ Usuário encontrado no localStorage:', storedUser.email);
       setUser(storedUser);
     }
 
     // Verifica sessão do Supabase (para Google OAuth)
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('🔍 Verificando sessão do Supabase...');
+      // console.log('🔍 Verificando sessão do Supabase...');
       
       if (session?.user) {
-        console.log('✅ Sessão ativa do Supabase encontrada:', session.user.email);
+        // console.log('✅ Sessão ativa do Supabase encontrada:', session.user.email);
         
         // Usuário logado via Google OAuth
         const googleUser = {
@@ -62,21 +62,21 @@ export function AuthProvider({ children }) {
         localStorage.setItem('token', session.access_token);
         localStorage.setItem('user', JSON.stringify(googleUser));
         
-        console.log('💾 Usuário Google salvo:', googleUser);
+        // console.log('💾 Usuário Google salvo:', googleUser);
         setUser(googleUser);
       } else {
-        console.log('ℹ️ Nenhuma sessão do Supabase encontrada');
+        // console.log('ℹ️ Nenhuma sessão do Supabase encontrada');
       }
       
       setLoading(false);
     }).catch(error => {
-      console.error('❌ Erro ao verificar sessão do Supabase:', error);
+      // console.error('❌ Erro ao verificar sessão do Supabase:', error);
       setLoading(false);
     });
 
     // Listener para mudanças na autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔔 Auth state changed:', event);
+      // console.log('🔔 Auth state changed:', event);
       
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('✅ Usuário logou via Google:', session.user.email);
